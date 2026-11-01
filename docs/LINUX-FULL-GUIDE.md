@@ -1,7 +1,7 @@
 # FDR SYSTEM no Linux — guia completo de build e implementação
 
-> **Repositório:** `https://github.com/anymousdark/FDR_SYSTEM-Linux`
-> **Branch:** `main` · **Data:** 29/10/2026
+> **Repositório público:** `https://github.com/anymousdark/FDR_SYSTEM-Linux`
+> **Branch:** `main` · **Data:** 01/11/2026
 >
 > Este é o guia principal para instalar, compilar, testar e continuar o port no Linux.
 > Confirma sempre o commit atual com `git log -1 --oneline`; não confies num número de
@@ -98,7 +98,7 @@ Reinstala depois de construir:
 
 ```bash
 bash packaging/build-linux.sh
-sudo apt install --reinstall ./publish/fdr-system_1.6.1_amd64.deb
+sudo apt install --reinstall ./publish/fdr-system_1.6.2_amd64.deb
 ```
 
 Ou, para testar sem instalar:
@@ -374,8 +374,8 @@ Se o HTTPS pedir autenticação, usa um token pessoal ou configura SSH:
 git clone git@github.com:anymousdark/FDR_SYSTEM-Linux.git
 ```
 
-**Não colar tokens em issues, logs, capturas de ecrã ou no chat.** A visibilidade do
-repositório é uma decisão do autor; não a alteres sem autorização.
+**Não colar tokens em issues, logs, capturas de ecrã ou no chat.** O repositório é
+público; não alteres a visibilidade sem autorização.
 
 ### 4.2 Compilar
 
@@ -446,10 +446,10 @@ com a arquitectura errada.
 
 ```bash
 # x64
-sudo apt install ./publish/fdr-system_1.6.1_amd64.deb
+sudo apt install ./publish/fdr-system_1.6.2_amd64.deb
 
 # ARM64
-sudo apt install ./publish/fdr-system_1.6.1_arm64.deb
+sudo apt install ./publish/fdr-system_1.6.2_arm64.deb
 
 fdr-system
 ```
@@ -457,7 +457,7 @@ fdr-system
 Se já tinhas a mesma versão instalada e queres substituir:
 
 ```bash
-sudo apt install --reinstall ./publish/fdr-system_1.6.1_amd64.deb
+sudo apt install --reinstall ./publish/fdr-system_1.6.2_amd64.deb
 ```
 
 Confirma que estás a abrir o binário novo:
@@ -949,7 +949,7 @@ Se as rotas existem mas a app instalada é antiga:
 
 ```bash
 bash packaging/build-linux.sh
-sudo apt install --reinstall ./publish/fdr-system_1.6.1_amd64.deb
+sudo apt install --reinstall ./publish/fdr-system_1.6.2_amd64.deb
 ```
 
 Se estás a abrir `fdr-system` e o `readlink` aponta para outro sítio, remove ou
@@ -1055,7 +1055,7 @@ permitir tentar novamente.
 ### O `.deb` não substitui a versão antiga
 
 ```bash
-sudo apt install --reinstall ./publish/fdr-system_1.6.1_amd64.deb
+sudo apt install --reinstall ./publish/fdr-system_1.6.2_amd64.deb
 ```
 
 Confirma depois:
@@ -1080,7 +1080,7 @@ stat -c '%y %n' "$(readlink -f "$(which fdr-system)")"
 - O restauro é destrutivo: testa num aparelho de teste, com backup.
 - Só firmware assinado pela Apple deve ser usado para restauro.
 - Verifica sempre o SHA-256 do IPSW.
-- A visibilidade do repositório é uma decisão do autor; não a alteres sem autorização.
+- O repositório é público; não alteres a visibilidade sem autorização.
 - Ferramentas de jailbreak são externas e opcionais; não são incluídas no FDR.
 
 ---
@@ -1126,7 +1126,7 @@ dotnet run --project src/FdrSystem.App/FdrSystem.App.csproj
 bash packaging/build-linux.sh
 
 # 7. Instalar/substituir .deb
-sudo apt install --reinstall ./publish/fdr-system_1.6.1_amd64.deb
+sudo apt install --reinstall ./publish/fdr-system_1.6.2_amd64.deb
 
 # 8. Estado USB
 systemctl status usbmuxd --no-pager

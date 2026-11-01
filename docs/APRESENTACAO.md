@@ -34,9 +34,9 @@ e a ficha técnica são offline. A página Instalação só usa a rede para atua
 **Recomendado — pacote `.deb`** (amd64 ou arm64):
 
 ```bash
-sudo apt install ./fdr-system_1.6.1_amd64.deb
+sudo apt install ./fdr-system_1.6.2_amd64.deb
 # ou
-sudo apt install ./fdr-system_1.6.1_arm64.deb
+sudo apt install ./fdr-system_1.6.2_arm64.deb
 ```
 
 - Instala em `/opt/fdr-system`, cria o comando `fdr-system` e a entrada no menu com ícone.
@@ -48,17 +48,17 @@ sudo apt install ./fdr-system_1.6.1_arm64.deb
 **Portátil — AppImage** (x86_64):
 
 ```bash
-chmod +x FDR-SYSTEM-1.6.1-x86_64.AppImage
-./FDR-SYSTEM-1.6.1-x86_64.AppImage
+chmod +x FDR-SYSTEM-1.6.2-x86_64.AppImage
+./FDR-SYSTEM-1.6.2-x86_64.AppImage
 ```
 
 Não precisa do .NET instalado nem de instalar dependências para arrancar; o acesso ao
 iPhone continua a precisar de `usbmuxd` e `libimobiledevice` no sistema.
 
 Os dois formatos são publicados na release
-[`v1.6.1`](https://github.com/anymousdark/FDR_SYSTEM-Linux/releases/tag/v1.6.1), com
+[`v1.6.2`](https://github.com/anymousdark/FDR_SYSTEM-Linux/releases/tag/v1.6.2), com
 checksums SHA-256. O código-fonte completo também vai na release (arquivos automáticos
-do GitHub e tarball `FDR-SYSTEM-1.6.1-source.tar.gz`).
+do GitHub e tarball `FDR-SYSTEM-1.6.2-source.tar.gz`).
 
 ### Permissões USB
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Sobe a versão do projeto num único sítio: Directory.Build.props.
 #
-#   bash packaging/bump-version.sh patch          # 1.6.0 -> 1.6.1
+#   bash packaging/bump-version.sh patch          # 1.6.1 -> 1.6.2
 #   bash packaging/bump-version.sh minor          # 1.6.0 -> 1.7.0
 #   bash packaging/bump-version.sh major          # 1.6.0 -> 2.0.0
-#   bash packaging/bump-version.sh 1.6.2          # versão explícita
+#   bash packaging/bump-version.sh 1.6.3          # versão explícita
 #
 # Opções:
 #   --commit    faz commit da alteração ("chore: versão X")

@@ -5,7 +5,7 @@
     e o csproj, o binário, o nome do .deb e o cabeçalho da app acompanham.
   -->
   <PropertyGroup>
-    <Version>1.6.1</Version>
+    <Version>1.6.2</Version>
     <Product>FDR SYSTEM</Product>
     <Company>anymousdark</Company>
     <Authors>anymousdark</Authors>

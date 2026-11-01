@@ -1,7 +1,7 @@
 # Continuar a build no Linux
 
-> **Handoff:** 28/10/2026 · branch `main` · confirma o commit com `git log -1 --oneline`
-> Repositório: `https://github.com/anymousdark/FDR_SYSTEM-Linux`
+> **Handoff:** 01/11/2026 · branch `main` · confirma o commit com `git log -1 --oneline`
+> Repositório público: `https://github.com/anymousdark/FDR_SYSTEM-Linux`
 >
 > Este documento é o resumo rápido. O guia completo, com dependências por página,
 > diagnóstico de “só aparece Offline” e plano de implementação, está em
@@ -105,8 +105,8 @@ ou permissões), não da GUI.
 
 ## 3. Obter o código
 
-Repositório: `https://github.com/anymousdark/FDR_SYSTEM-Linux`. Usa a conta GitHub que
-já tem acesso.
+Repositório público: `https://github.com/anymousdark/FDR_SYSTEM-Linux`. Usa a conta
+GitHub que já tem acesso.
 
 ```bash
 git clone https://github.com/anymousdark/FDR_SYSTEM-Linux.git
@@ -219,7 +219,7 @@ bash packaging/build-linux.sh
 O script gera o publish e, se `dpkg-deb` estiver instalado, um `.deb` simples.
 
 ```bash
-sudo apt install ./publish/fdr-system_1.6.1_amd64.deb
+sudo apt install ./publish/fdr-system_1.6.2_amd64.deb
 fdr-system
 ```
 
@@ -306,7 +306,7 @@ definidos.
 - A app não envia dados do dispositivo para servidores próprios.
 - Nada é apagado do iPhone sem confirmação explícita.
 - UDID, série, IMEI e outros identificadores ficam mascarados por omissão.
-- A visibilidade do repositório é uma decisão do autor; não a alteres sem autorização.
+- O repositório é público; não alteres a visibilidade sem autorização.
 
 ---
 

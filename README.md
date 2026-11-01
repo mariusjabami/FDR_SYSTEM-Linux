@@ -1,9 +1,8 @@
 # FDR SYSTEM — Linux (Avalonia)
 
 > Port do **FDR SYSTEM** (C# + WPF, Windows) para **Linux**, em **Avalonia UI**.
-> **Versão Linux: 1.6.1** (o projeto Windows mantém a sua própria numeração).
-> A aplicação Windows original não é alterada por este projeto. A visibilidade do
-> repositório é uma decisão do autor.
+> **Versão Linux: 1.6.2** (o projeto Windows mantém a sua própria numeração).
+> **Repositório público.** A aplicação Windows original não é alterada por este projeto.
 
 **Estado atual:** as dez páginas estão implementadas — **Offline**, **Online**, **Restauro**,
 **Reparo**, **Diagnóstico**, **Firmware**, **Acessibilidade (AFC)**, **Driver**, **Instalação** e
@@ -11,6 +10,7 @@
 (`usbmuxd`, `libimobiledevice`, motores opcionais) por `pkexec`, e fez a página **Offline** mostrar
 modelo e ficha técnica também em recovery/DFU. A 1.6.1 adota o nome **FDR SYSTEM** (binário
 `FDR-SYSTEM`), acrescenta **166 testes** automáticos e este documento de apresentação.
+A 1.6.2 corrige as dependências do pacote `.deb` e atualiza a documentação de validação.
 Diagnóstico e AFC foram testados com um iPhone real
 no ambiente Windows de desenvolvimento; falta validar tudo numa instalação Linux. O projeto compila
 e gera um binário `linux-x64` self-contained.
@@ -219,7 +219,7 @@ corre em tags `v*` (ou manualmente) e anexa os `.deb` e a AppImage à release.
 
 ```bash
 bash packaging/build-appimage.sh
-# → publish/FDR-SYSTEM-1.6.1-x86_64.AppImage
+# → publish/FDR-SYSTEM-1.6.2-x86_64.AppImage
 ```
 
 A AppImage inclui o runtime .NET e as bibliotecas da aplicação, mas continua a precisar
@@ -238,14 +238,14 @@ pelo .NET.
 
 ```bash
 # x64
-sudo apt install ./publish/fdr-system_1.6.1_amd64.deb
+sudo apt install ./publish/fdr-system_1.6.2_amd64.deb
 
 # ARM64
-sudo apt install ./publish/fdr-system_1.6.1_arm64.deb
+sudo apt install ./publish/fdr-system_1.6.2_arm64.deb
 
 # ou AppImage (sem instalar)
-chmod +x FDR-SYSTEM-1.6.1-x86_64.AppImage
-./FDR-SYSTEM-1.6.1-x86_64.AppImage
+chmod +x FDR-SYSTEM-1.6.2-x86_64.AppImage
+./FDR-SYSTEM-1.6.2-x86_64.AppImage
 ```
 
 ### Ainda por fazer
@@ -427,9 +427,9 @@ A versão vive num único sítio, `Directory.Build.props`, e é usada pelo cspro
 da app e pelo nome do `.deb`:
 
 ```bash
-bash packaging/bump-version.sh patch     # 1.6.0 -> 1.6.1
-bash packaging/bump-version.sh minor     # 1.6.0 -> 1.7.0
-bash packaging/bump-version.sh 1.6.2 --tag --push
+bash packaging/bump-version.sh patch     # 1.6.2 -> 1.6.3
+bash packaging/bump-version.sh minor     # 1.6.2 -> 1.7.0
+bash packaging/bump-version.sh 1.6.3 --tag --push
 bash packaging/build-linux.sh            # usa a versão atual, sem números à mão
 ```
 
@@ -460,9 +460,8 @@ O `ContentPresenter` do `ControlTemplate` precisa de
 
 ## 12. Privacidade e licença
 
-A visibilidade do repositório é uma decisão do autor. O código e os binários não devem
-ser redistribuídos sem autorização. A aplicação Windows e a release pública são projetos
-separados.
+Este repositório é público. O código e os binários não devem ser redistribuídos sem
+autorização. A aplicação Windows e a release pública são projetos separados.
 
 Os dados lidos do iPhone ficam na máquina local. Os logs também são locais. Não há
 telemetria, contas ou servidores próprios.
