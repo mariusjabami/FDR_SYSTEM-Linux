@@ -2,7 +2,8 @@
 
 > Port do **FDR SYSTEM** (C# + WPF, Windows) para **Linux**, em **Avalonia UI**.
 > **Versão Linux: 1.6.1** (o projeto Windows mantém a sua própria numeração).
-> Repositório **privado**. A aplicação Windows original não é alterada por este projeto.
+> A aplicação Windows original não é alterada por este projeto. A visibilidade do
+> repositório é uma decisão do autor.
 
 **Estado atual:** as dez páginas estão implementadas — **Offline**, **Online**, **Restauro**,
 **Reparo**, **Diagnóstico**, **Firmware**, **Acessibilidade (AFC)**, **Driver**, **Instalação** e
@@ -79,14 +80,14 @@ No Linux, esse papel é desempenhado pelo `usbmuxd`.
 | Página **Firmware** | ✅ implementada (catálogo completo, filtro, cache 12 h, download por linha) |
 | Página **Jailbreak** | ✅ implementada (deteta `palera1n`/`checkra1n`, mostra caminho/versão, comandos e avisos; não executa nem corre `sudo`) |
 | Empacotamento `.deb` | ✅ amd64 e arm64 (`Architecture` derivada do RID) |
-| AppImage | ✅ x86_64 e aarch64 (gerada no host da mesma arquitectura) |
+| AppImage | ✅ x86_64 na release; o script também suporta aarch64 num host aarch64 |
 | Ícone e `.desktop` | ✅ SVG + PNG 16–512, `Icon=fdr-system`, `StartupWMClass` |
-| Releases | ✅ `.github/workflows/release.yml` anexa `.deb` e AppImage à tag `v*` |
-| Teste com iPhone real em Linux | 🟡 Offline validado com iPhone 12 (iOS 27.2); falta Restauro/Reparo/AFC/Diagnóstico |
+| Releases | ✅ `.github/workflows/release.yml` anexa `.deb` (amd64/arm64) e AppImage x86_64 à tag `v*` |
+| Teste com iPhone real | 🟡 Offline validado com iPhone 12 (iOS 27.2) no Windows; falta validar tudo em Linux |
 
-O código dos placeholders está em
-`src/FdrSystem.App/Views/Pages/PlaceholderView.cs`. Cada página nova entra no `switch`
-de `MainWindow.ShowPage(string tag)`.
+Todas as rotas de `MainWindow.ShowPage(string tag)` têm vista própria. O
+`src/FdrSystem.App/Views/Pages/PlaceholderView.cs` é apenas uma rede de segurança para
+tags desconhecidas.
 
 ---
 
@@ -101,7 +102,7 @@ sudo apt update
 sudo apt install -y dotnet-sdk-8.0
 
 # Comunicação com o iPhone
-sudo apt install -y libimobiledevice-utils libimobiledevice-1.0-6 usbmuxd
+sudo apt install -y libimobiledevice-utils usbmuxd
 
 # Opcional: restauro
 sudo apt install -y idevicerestore || true
@@ -192,7 +193,7 @@ dotnet publish src/FdrSystem.App/FdrSystem.App.csproj \
 ./publish/linux-x64/FDR-SYSTEM
 ```
 
-Resultado medido no projeto: **91,6 MB**, **218 ficheiros**, binário ELF `FDR-SYSTEM`.
+Resultado medido no projeto: **≈92 MB**, **218 ficheiros**, binário ELF `FDR-SYSTEM`.
 O destino não precisa de ter o .NET instalado.
 
 Atalho:
@@ -221,15 +222,19 @@ bash packaging/build-appimage.sh
 # → publish/FDR-SYSTEM-1.6.1-x86_64.AppImage
 ```
 
-A AppImage é self-contained (não precisa de .NET nem de dependências instaladas) e só
+A AppImage inclui o runtime .NET e as bibliotecas da aplicação, mas continua a precisar
+das bibliotecas gráficas do sistema e de `usbmuxd`/`libimobiledevice` para o iPhone. Só
 pode ser gerada **no host da mesma arquitectura**: `RID=linux-arm64` exige um host
 `aarch64`. O `.deb` continua a poder ser cross-compilado.
 
 ### Pacote `.deb`
 
 O script instala em `/opt/fdr-system`, cria o symlink `/usr/bin/fdr-system` e o ficheiro
-`.desktop`. Dependências declaradas: `libimobiledevice-utils` e `usbmuxd`; a biblioteca
-`libimobiledevice-1.0-6` (ou `-6t64` no Ubuntu 24.04) fica como recomendação.
+`.desktop`. Dependências declaradas: `libimobiledevice-utils`, `usbmuxd`, `xdg-utils`,
+bibliotecas gráficas X11/OpenGL/fontconfig e runtime nativo (`libstdc++6`, `libgcc-s1`,
+`zlib1g`). A biblioteca `libimobiledevice-1.0-6` (ou `-6t64` no Ubuntu 24.04) fica como
+recomendação. Numa instalação mínima, garante também o ICU do sistema (`libicu*`) exigido
+pelo .NET.
 
 ```bash
 # x64
@@ -248,7 +253,7 @@ chmod +x FDR-SYSTEM-1.6.1-x86_64.AppImage
 - atualizações via `.deb`/`apt` ou `AppImageUpdate`;
 - teste de instalação numa máquina Linux limpa (dependências, polkit, udev);
 - validação em hardware real das operações destrutivas (Restauro/Reparo) e de AFC/Diagnóstico;
-- testes automáticos dos parsers (progresso, IPSW/modelo, MDM, CPID/BDID).
+- testes de integração numa máquina Linux real; os 166 testes unitários já correm na CI Linux.
 
 ---
 
@@ -325,7 +330,7 @@ Estas regras são obrigatórias e não devem ser contornadas:
 - **Não executar ações destrutivas sem confirmação explícita.** Restauro, apagamento,
   reinício e alterações de pareamento exigem aviso claro.
 - **Não enviar dados do dispositivo para servidores próprios.** As páginas offline não
-  usam rede; as online, quando existirem, só devem contactar catálogos públicos da Apple.
+  usam rede; as páginas Online/Firmware só contactam o catálogo público `api.ipsw.me`.
 - **Mascarar UDID, IMEI, série e outros identificadores** por omissão.
 - **Não guardar credenciais** em ficheiros de configuração ou logs.
 
@@ -361,9 +366,10 @@ Ordem sugerida para completar o port:
       `.github/workflows/linux.yml` (build + publish + artefactos).
 - [x] **AppImage + ícone + release** — `packaging/build-appimage.sh`, ícones 16–512 no
       `.deb`/`.desktop` e `.github/workflows/release.yml` para anexar assets à tag.
-- [ ] **Teste real** — correr numa instalação Linux limpa com iPhone físico
-      (Offline já validado com iPhone 12).
-- [ ] **Testes automáticos** — projeto de testes para parsers e motores.
+- [x] **Teste real (parcial)** — Offline validado com iPhone 12 (iOS 27.2) no Windows;
+      falta validar Restauro, Reparo, AFC e Diagnóstico numa instalação Linux limpa.
+- [x] **Testes automáticos** — 166 testes xUnit (parsers, caminhos e motores), executados
+      na CI Linux.
 
 Definição de pronto por página: compila, aparece na navegação, tem os botões do original,
 escreve logs por `AppLog`, mascara IDs e mostra uma mensagem clara quando falta uma
@@ -430,7 +436,7 @@ bash packaging/build-linux.sh            # usa a versão atual, sem números à 
 ### Acessibilidade: biblioteca nativa em falta
 
 ```bash
-sudo apt install libimobiledevice-1.0-6
+sudo apt install libimobiledevice-utils
 ```
 
 A página AFC usa P/Invoke para `libimobiledevice-1.0.so`; as ferramentas `idevice*` vêm
@@ -454,8 +460,9 @@ O `ContentPresenter` do `ControlTemplate` precisa de
 
 ## 12. Privacidade e licença
 
-Este é um repositório **privado**. O código e os binários não devem ser redistribuídos
-sem autorização do autor. A aplicação Windows e a release pública são projetos separados.
+A visibilidade do repositório é uma decisão do autor. O código e os binários não devem
+ser redistribuídos sem autorização. A aplicação Windows e a release pública são projetos
+separados.
 
 Os dados lidos do iPhone ficam na máquina local. Os logs também são locais. Não há
 telemetria, contas ou servidores próprios.

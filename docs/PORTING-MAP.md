@@ -28,7 +28,7 @@ Referência: `C:\Users\p\Documents\OfflineDeviceDiagnostics` (só leitura).
 | `Themes/*.xaml` (5) | 5×79 | `src/FdrSystem.App/Themes/*.axaml` | convertidos automaticamente |
 | `MainWindow.xaml` (shell) | 1683 | `Views/MainWindow.axaml` | cabeçalho e sidebar; sem `WindowChrome` (decorations nativas) |
 
-## Ainda por portar (com pistas)
+## Itens sem port direto (ou adiados)
 
 ### `MainWindow.Window.cs` (72 linhas)
 Não é preciso: só resolvia a área de trabalho maximizada no Windows (`MonitorFromWindow`).
@@ -38,10 +38,10 @@ No Avalonia usar `WindowState="Maximized"`.
 **Não portar como está.** O updater usa `.hdiff` + `hpatchz.exe` + `Inno Setup`. No Linux:
 `.deb` com `apt`, ou `AppImageUpdate`. Deixar para o fim.
 
-### Restantes páginas
-`MainWindow.xaml.cs` tem ~2750 linhas. Offline, Diagnóstico, Acessibilidade, Driver e Online já
-estão portados. Portar por blocos, uma página por
-vez, com o mesmo nome de handler.
+### Páginas
+As dez páginas do Windows já têm vista própria e estão ligadas em `ShowPage(string tag)`.
+O `PlaceholderView` é apenas fallback para tags desconhecidas. Ao alterar uma página, mantém
+o mesmo nome de handler do original.
 
 ## Diferenças de plataforma a respeitar
 

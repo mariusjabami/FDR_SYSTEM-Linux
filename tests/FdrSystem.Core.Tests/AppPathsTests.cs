@@ -31,7 +31,7 @@ public sealed class AppPathsTests : IDisposable
         try { Directory.Delete(_root, recursive: true); } catch { /* melhor esforço */ }
     }
 
-    [Fact]
+    [LinuxFact]
     public void EnsureDataDirectories_MigratesLegacyDataAndReports()
     {
         var legacyData = Path.Combine(_root, "data", "FDR_SYSTEM");
@@ -50,7 +50,7 @@ public sealed class AppPathsTests : IDisposable
         Assert.False(Directory.Exists(legacyReports));
     }
 
-    [Fact]
+    [LinuxFact]
     public void EnsureDataDirectories_CopiesMissingSettingsWhenNewFolderExists()
     {
         var legacyData = Path.Combine(_root, "data", "FDR_SYSTEM");
@@ -66,7 +66,7 @@ public sealed class AppPathsTests : IDisposable
         Assert.Contains("Floresta", File.ReadAllText(settings));
     }
 
-    [Fact]
+    [LinuxFact]
     public void EnsureDataDirectories_NeverOverwritesNewSettings()
     {
         var legacyData = Path.Combine(_root, "data", "FDR_SYSTEM");

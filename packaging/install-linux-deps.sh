@@ -31,10 +31,11 @@ apt-get update
 echo "==> dependências base, USB e GUI"
 apt-get install -y --no-install-recommends \
   ca-certificates curl git usbutils \
-  libimobiledevice-utils libimobiledevice-1.0-6 usbmuxd \
+  libimobiledevice-utils usbmuxd \
   dpkg-deb fakeroot xdg-utils \
-  libx11-6 libice6 libsm6 libfontconfig1 libfreetype6 \
-  libxrandr2 libxi6 libxcursor1 libxinerama1 libgl1 libegl1 \
+  libx11-6 libxcb1 libxext6 libxrender1 libice6 libsm6 \
+  libfontconfig1 libfreetype6 libxrandr2 libxi6 libxcursor1 libxinerama1 \
+  libgl1 libegl1 zlib1g libstdc++6 libgcc-s1 \
   fonts-dejavu-core
 
 # Opcionais: não impedem o build se o repositório da distribuição não os tiver.

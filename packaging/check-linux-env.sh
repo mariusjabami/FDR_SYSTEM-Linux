@@ -11,6 +11,22 @@ set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT" || exit 1
 
+VERSION="$(sed -n 's:.*<Version>\([^<]*\)</Version>.*:\1:p' "$ROOT/Directory.Build.props" 2>/dev/null | head -n1)"
+VERSION="${VERSION:-?}"
+
+host_arch="$(dpkg --print-architecture 2>/dev/null || true)"
+if [[ -z "$host_arch" ]]; then
+  case "$(uname -m 2>/dev/null)" in
+    x86_64|amd64) host_arch=amd64 ;;
+    aarch64|arm64) host_arch=arm64 ;;
+    *) host_arch=amd64 ;;
+  esac
+fi
+case "$host_arch" in
+  arm64) host_rid=linux-arm64 ;;
+  *) host_rid=linux-x64 ;;
+esac
+
 failures=0
 warnings=0
 
@@ -95,7 +111,7 @@ if command -v ldconfig >/dev/null 2>&1 && ldconfig -p 2>/dev/null | grep -q 'lib
   ok "libimobiledevice-1.0.so encontrada"
 else
   warn "libimobiledevice-1.0.so não encontrada; Acessibilidade/AFC pode falhar"
-  info "sudo apt install libimobiledevice-1.0-6"
+  info "sudo apt install libimobiledevice-utils (traz a biblioteca correta)"
 fi
 
 echo
@@ -174,7 +190,7 @@ fi
 
 echo
 echo "-- páginas ligadas no código"
-for tag in offline diagnostico acessibilidade driver; do
+for tag in offline online firmware restauro reparo jailbreak diagnostico acessibilidade driver instalacao; do
   if grep -q "\"$tag\" =>" src/FdrSystem.App/Views/MainWindow.axaml.cs 2>/dev/null; then
     ok "rota $tag presente"
   else
@@ -183,18 +199,8 @@ for tag in offline diagnostico acessibilidade driver; do
 done
 
 echo
-echo "-- placeholders esperados"
-for tag in online restauro reparo firmware jailbreak; do
-  if grep -q "\[\"$tag\"\]" src/FdrSystem.App/Views/Pages/PlaceholderView.cs 2>/dev/null; then
-    info "$tag: ainda placeholder (por implementar)"
-  else
-    info "$tag: já não está em PlaceholderView"
-  fi
-done
-
-echo
 echo "-- binários"
-repo_bin="$ROOT/publish/linux-x64/FDR-SYSTEM"
+repo_bin="$ROOT/publish/$host_rid/FDR-SYSTEM"
 if [[ -x "$repo_bin" ]]; then
   ok "build do repositório: $repo_bin"
   info "$(stat -c '%y' "$repo_bin" 2>/dev/null || true)"
@@ -210,10 +216,10 @@ if [[ -n "$installed_bin" ]]; then
   info "$(stat -c '%y' "$resolved" 2>/dev/null || true)"
   if [[ -x "$repo_bin" && "$resolved" != "$repo_bin" ]]; then
     warn "a app instalada é outro ficheiro; se vês páginas antigas, reinstala:"
-    info "sudo apt install --reinstall ./publish/fdr-system_1.5.9_amd64.deb"
+    info "sudo apt install --reinstall ./publish/fdr-system_${VERSION}_${host_arch}.deb"
   fi
 else
-  info "fdr-system não está no PATH; podes correr ./publish/linux-x64/FDR-SYSTEM"
+  info "fdr-system não está no PATH; podes correr ./publish/$host_rid/FDR-SYSTEM"
 fi
 
 echo

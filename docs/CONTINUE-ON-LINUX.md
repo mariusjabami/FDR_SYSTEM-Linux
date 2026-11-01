@@ -1,7 +1,7 @@
 # Continuar a build no Linux
 
 > **Handoff:** 28/10/2026 · branch `main` · confirma o commit com `git log -1 --oneline`
-> Repositório privado: `https://github.com/anymousdark/FDR_SYSTEM-Linux`
+> Repositório: `https://github.com/anymousdark/FDR_SYSTEM-Linux`
 >
 > Este documento é o resumo rápido. O guia completo, com dependências por página,
 > diagnóstico de “só aparece Offline” e plano de implementação, está em
@@ -22,7 +22,7 @@
 | Instalação (`pkexec`) | implementada |
 | Publicação `linux-x64`/`linux-arm64` self-contained | funcional |
 | `.deb` amd64/arm64 | funcional |
-| AppImage x86_64/aarch64 + ícone | funcional (no host da mesma arquitectura) |
+| AppImage x86_64 + ícone | funcional; o script também suporta aarch64 num host aarch64 |
 | Release automática (`.github/workflows/release.yml`) | funcional |
 
 Testes já feitos no Windows de desenvolvimento, com um iPhone 13 real:
@@ -33,7 +33,7 @@ Testes já feitos no Windows de desenvolvimento, com um iPhone 13 real:
 - Driver: deteção do iPhone, atualização do estado e cópia dos comandos.
 
 **O que falta mesmo é validar as operações destrutivas e de hardware numa instalação Linux
-real** (Offline já foi validado com um iPhone 12, iOS 27.2).
+real** (Offline já foi validado com um iPhone 12, iOS 27.2, no Windows).
 
 ---
 
@@ -46,7 +46,7 @@ O alvo documentado é Debian/Ubuntu/Kali. Noutra distribuição, adapta os nomes
 ```bash
 sudo apt update
 sudo apt install -y git curl \
-  libimobiledevice-utils libimobiledevice-1.0-6 usbmuxd \
+  libimobiledevice-utils usbmuxd \
   dpkg-deb fakeroot
 ```
 
@@ -105,7 +105,8 @@ ou permissões), não da GUI.
 
 ## 3. Obter o código
 
-Repositório privado. Usa a conta GitHub que já tem acesso.
+Repositório: `https://github.com/anymousdark/FDR_SYSTEM-Linux`. Usa a conta GitHub que
+já tem acesso.
 
 ```bash
 git clone https://github.com/anymousdark/FDR_SYSTEM-Linux.git
@@ -222,26 +223,26 @@ sudo apt install ./publish/fdr-system_1.6.1_amd64.deb
 fdr-system
 ```
 
-O `.deb` atual é **amd64**. Para ARM64 é preciso ajustar a arquitetura no `control`.
+O `.deb` é gerado para **amd64** ou **arm64** conforme o RID usado no build
+(`linux-x64` ou `linux-arm64`).
 
 ---
 
-## 7. Próximos passos de desenvolvimento
+## 7. Próximos passos
 
-Ordem recomendada:
+1. **Validar em Linux real** — Offline, Diagnóstico, AFC, Driver e operações destrutivas
+   (Restauro/Reparo) com um iPhone de teste; registar as falhas encontradas.
+2. **Instalação limpa** — testar o `.deb` (amd64/arm64) em Debian/Ubuntu/Kali, incluindo
+   dependências gráficas, `pkexec`, `usbmuxd` e permissões `plugdev`.
+3. **AppImage** — validar a x86_64 publicada e, se necessário, publicar também aarch64.
+4. **Release** — se as correções de empacotamento justificarem, subir a versão com
+   `packaging/bump-version.sh` e criar uma nova tag.
 
-1. **Online / Firmware / Restauro** — portar `DownloadManager.cs` (download segmentado e
-   SHA-256) e executar `idevicerestore` com progresso por `stdout`.
-2. **Reparo** — recovery/restart/ativação; MDM apenas deteção.
-3. **Jailbreak** — detetar `palera1n`/`checkra1n` instalados e abrir a ferramenta do sistema.
-4. ~~**Empacotamento**~~ — `.deb` amd64/arm64, AppImage e release automática feitos.
-5. **CI** — build e testes num runner Linux.
-
-Para cada página:
+Ao adicionar uma página nova:
 
 - criar `Views/Pages/<Pagina>View.axaml(.cs)` em code-behind;
 - ligar em `MainWindow.ShowPage(string tag)`;
-- remover a entrada correspondente de `PlaceholderView.cs`;
+- manter o `PlaceholderView` apenas como fallback para tags desconhecidas;
 - atualizar `README.md`, `AGENTS.md` e `docs/PORTING-MAP.md`;
 - compilar, testar, fazer commit e push.
 
@@ -272,7 +273,7 @@ O ficheiro tem de ser `.axaml`; um `.xaml` não é compilado e o erro engana.
 ### `libimobiledevice-1.0.so` em falta
 
 ```bash
-sudo apt install libimobiledevice-1.0-6
+sudo apt install libimobiledevice-utils
 ```
 
 ### `idevice_id -l` vazio
@@ -305,7 +306,7 @@ definidos.
 - A app não envia dados do dispositivo para servidores próprios.
 - Nada é apagado do iPhone sem confirmação explícita.
 - UDID, série, IMEI e outros identificadores ficam mascarados por omissão.
-- O repositório é privado; não o tornar público sem autorização.
+- A visibilidade do repositório é uma decisão do autor; não a alteres sem autorização.
 
 ---
 

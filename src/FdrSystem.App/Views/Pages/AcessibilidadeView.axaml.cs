@@ -155,7 +155,7 @@ public partial class AcessibilidadeView : UserControl
         catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException)
         {
             AfcStatusText.Text =
-                "Biblioteca nativa em falta: libimobiledevice-1.0. Instala libimobiledevice-1.0-6.";
+                "Biblioteca nativa em falta: libimobiledevice-1.0. Instala libimobiledevice-utils.";
             AppLog.Error("AFC: " + ex.Message, "Acessibilidade");
         }
         catch (Exception ex)

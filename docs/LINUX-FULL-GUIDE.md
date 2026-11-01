@@ -1,6 +1,6 @@
 # FDR SYSTEM no Linux — guia completo de build e implementação
 
-> **Repositório privado:** `https://github.com/anymousdark/FDR_SYSTEM-Linux`
+> **Repositório:** `https://github.com/anymousdark/FDR_SYSTEM-Linux`
 > **Branch:** `main` · **Data:** 29/10/2026
 >
 > Este é o guia principal para instalar, compilar, testar e continuar o port no Linux.
@@ -28,6 +28,7 @@ No `main` atual, todas as páginas do Windows estão implementadas e ligadas:
 - **Diagnóstico**
 - **Acessibilidade (AFC)**
 - **Driver**
+- **Instalação**
 - **Firmware**
 - **Jailbreak**
 
@@ -139,7 +140,7 @@ página implementada, o código é antigo.
 |---|---|---|---|
 | Offline | funcional | `OfflineView.axaml(.cs)` + `DeviceService.cs` | `ideviceinfo`, `idevicediagnostics`, `usbmuxd` |
 | Diagnóstico | implementado; teste Linux pendente | `DiagnosticoView.axaml(.cs)` | `idevicesyslog`, `idevicecrashreport`, `idevicepair`, `ideviceprovision` |
-| Acessibilidade | implementado; teste Linux pendente | `AcessibilidadeView.axaml(.cs)` + `AfcSession.cs` | `libimobiledevice-1.0-6`, `idevice_id`, `ideviceinfo`, `idevicescreenshot` |
+| Acessibilidade | implementado; teste Linux pendente | `AcessibilidadeView.axaml(.cs)` + `AfcSession.cs` | `libimobiledevice-1.0.so` (pacote `libimobiledevice-utils`), `idevice_id`, `ideviceinfo`, `idevicescreenshot` |
 | Driver | implementado; teste Linux pendente | `DriverView.axaml(.cs)` + `DriverEnvironment.cs` | `usbmuxd`, udev, `systemctl`, `id` |
 | Instalação | funcional | `InstalacaoView.axaml(.cs)` + `Core/Setup/` | `pkexec`/polkit, `apt`/`dnf`/`pacman`, rede para o repositório |
 | Online | funcional | `OnlineView.axaml(.cs)` + `Core/Firmware/` | `api.ipsw.me`; `idevicerestore` só na página Restauro |
@@ -193,7 +194,7 @@ Com um iPhone 13 real, no Windows de desenvolvimento:
 |---|---|
 | Daemon USB | `usbmuxd` |
 | Ferramentas `idevice*` | `libimobiledevice-utils` |
-| Biblioteca nativa AFC | `libimobiledevice-1.0-6` |
+| Biblioteca nativa AFC | `libimobiledevice-1.0-6` (ou `-6t64` no Ubuntu 24.04; vem com `libimobiledevice-utils`) |
 | Regras udev | incluídas no `usbmuxd` |
 | Diagnóstico USB | `usbutils` (`lsusb`) |
 
@@ -241,7 +242,7 @@ sudo bash packaging/install-linux-deps.sh
 
 O script:
 
-- instala .NET 8, `usbmuxd`, `libimobiledevice-utils`, `libimobiledevice-1.0-6`;
+- instala .NET 8, `usbmuxd` e `libimobiledevice-utils` (que traz a biblioteca nativa);
 - tenta instalar `idevicerestore` e `libirecovery-utils` (opcionais);
 - instala bibliotecas gráficas necessárias ao Avalonia;
 - ativa o `usbmuxd` e recarrega as regras udev;
@@ -257,10 +258,11 @@ sudo apt update
 
 sudo apt install -y \
   ca-certificates curl git usbutils \
-  libimobiledevice-utils libimobiledevice-1.0-6 usbmuxd \
+  libimobiledevice-utils usbmuxd \
   dpkg-deb fakeroot xdg-utils \
-  libx11-6 libice6 libsm6 libfontconfig1 libfreetype6 \
-  libxrandr2 libxi6 libxcursor1 libxinerama1 libgl1 libegl1 \
+  libx11-6 libxcb1 libxext6 libxrender1 libice6 libsm6 \
+  libfontconfig1 libfreetype6 libxrandr2 libxi6 libxcursor1 libxinerama1 \
+  libgl1 libegl1 zlib1g libstdc++6 libgcc-s1 \
   fonts-dejavu-core
 
 sudo apt install -y dotnet-sdk-8.0
@@ -354,7 +356,7 @@ abrir uma versão antiga.
 
 ## 4. Obter o código e compilar
 
-### 4.1 Clonar o repositório privado
+### 4.1 Clonar o repositório
 
 Usa a conta GitHub que já tem acesso:
 
@@ -372,8 +374,8 @@ Se o HTTPS pedir autenticação, usa um token pessoal ou configura SSH:
 git clone git@github.com:anymousdark/FDR_SYSTEM-Linux.git
 ```
 
-**Não colar tokens em issues, logs, capturas de ecrã ou no chat.** O repositório é
-privado; não o tornar público sem autorização.
+**Não colar tokens em issues, logs, capturas de ecrã ou no chat.** A visibilidade do
+repositório é uma decisão do autor; não a alteres sem autorização.
 
 ### 4.2 Compilar
 
@@ -622,23 +624,24 @@ aparelho de teste e faz backup.
 
 ---
 
-## 6. Implementar as cinco páginas que faltam
+## 6. Páginas implementadas — comportamento e validação
 
-Ordem recomendada:
+As páginas Online, Firmware, Restauro, Reparo e Jailbreak já estão implementadas. Esta
+secção descreve o comportamento esperado e o que falta validar em Linux real; não é uma
+lista de trabalho por fazer.
 
-1. **Online** — catálogo e download.
-2. **Firmware** — lista completa, reutilizando o catálogo/download.
-3. **Restauro** — `idevicerestore` e progresso.
-4. **Reparo** — recovery/restart/estado; sem contornar bloqueios.
-5. ~~**Jailbreak**~~ — feito em `JailbreakView` (deteta e mostra comandos; nunca executa).
-6. ~~**Empacotamento `.deb` + AppImage**~~ — feito em `packaging/build-linux.sh`,
+1. **Online** — catálogo e download (implementado).
+2. **Firmware** — lista completa, reutilizando o catálogo/download (implementado).
+3. **Restauro** — `idevicerestore` e progresso (implementado; validar em hardware).
+4. **Reparo** — recovery/restart/estado; sem contornar bloqueios (implementado; validar).
+5. **Jailbreak** — feito em `JailbreakView` (deteta e mostra comandos; nunca executa).
+6. **Empacotamento `.deb` + AppImage** — feito em `packaging/build-linux.sh`,
    `packaging/build-appimage.sh` e nos workflows de CI/release.
 
-Cada página deve:
+Cada página implementada deve:
 
 - ser um `UserControl` em `.axaml` com code-behind;
-- ser ligada em `MainWindow.ShowPage(string tag)`;
-- sair de `PlaceholderView.cs`;
+- estar ligada em `MainWindow.ShowPage(string tag)`; o `PlaceholderView` é só fallback;
 - usar `ToolRunner` para ferramentas do sistema;
 - registar erros com `AppLog`;
 - mascarar IDs;
@@ -841,16 +844,21 @@ contorna iCloud/Activation Lock/MDM.
 
 ### 6.6 Empacotamento e CI
 
-**Estado:** `.deb` funcional para `amd64` e `arm64`, AppImage para `x86_64`/`aarch64`
-(gerada no host), CI Linux activa e release automática por tag.
+**Estado:** `.deb` funcional para `amd64` e `arm64`, AppImage x86_64 publicada
+(aarch64 suportado pelo script num host aarch64), CI Linux activa e release automática
+por tag.
 
 - `packaging/build-linux.sh` publica self-contained (`publish/<RID>`) e gera
   `publish/fdr-system_<versao>_<arch>.deb`;
 - `Architecture` segue o RID (`linux-x64` → `amd64`, `linux-arm64` → `arm64`); um RID
   desconhecido aborta;
 - instala em `/opt/fdr-system`, cria `/usr/bin/fdr-system` e o `.desktop`;
-- `Depends: libimobiledevice-utils, usbmuxd` e
-  `Recommends: libimobiledevice-1.0-6 | libimobiledevice-1.0-6t64` (Ubuntu 24.04 usa `t64`);
+- `Depends:` `libimobiledevice-utils`, `usbmuxd`, `xdg-utils`, `libfontconfig1`,
+  `libfreetype6`, `libstdc++6`, `libgcc-s1`, `zlib1g`, `libx11-6`, `libxcb1`,
+  `libxext6`, `libxrandr2`, `libxi6`, `libxcursor1`, `libxrender1`, `libxinerama1`,
+  `libsm6`, `libice6`, `libgl1`, `libegl1`;
+- `Recommends: libimobiledevice-1.0-6 | libimobiledevice-1.0-6t64` (Ubuntu 24.04 usa
+  `t64`); numa instalação mínima, o ICU do sistema (`libicu*`) também é necessário;
 - `packaging/build-appimage.sh` cria `publish/FDR-SYSTEM-<versao>-<arch>.AppImage`
   (AppDir + `AppRun` + `.desktop` + `.DirIcon`), sem precisar de FUSE no build;
 - o ícone (`Assets/fdr-system.svg` + PNG 16–512) entra na janela (`_NET_WM_ICON` via
@@ -859,7 +867,8 @@ contorna iCloud/Activation Lock/MDM.
   os `.deb` como artefactos;
 - a release (`.github/workflows/release.yml`) corre em tags `v*` ou manualmente, compila
   `.deb` x64/arm64 + AppImage x64 e anexa tudo à release com `gh release upload --clobber`;
-- não colocar tokens ou chaves no repositório; não publicar o repositório.
+- não colocar tokens ou chaves no repositório; não alterar a visibilidade do repositório
+  sem autorização.
 
 ---
 
@@ -868,14 +877,15 @@ contorna iCloud/Activation Lock/MDM.
 Copia este bloco para o agente que vai trabalhar no Linux:
 
 ```text
-Estás no repositório privado FDR_SYSTEM-Linux, branch main.
+Estás no repositório FDR_SYSTEM-Linux, branch main.
 
 Antes de alterar código:
 1. Lê README.md, AGENTS.md, docs/LINUX-FULL-GUIDE.md e docs/PORTING-MAP.md.
 2. Corre: git status --short --branch && git log -1 --oneline
 3. Corre: bash packaging/check-linux-env.sh
-4. Confirma que existem as rotas offline, diagnostico, acessibilidade e driver
-   em src/FdrSystem.App/Views/MainWindow.axaml.cs.
+4. Confirma que existem as rotas offline, online, firmware, restauro, reparo, jailbreak,
+   diagnostico, acessibilidade, driver e instalacao em
+   src/FdrSystem.App/Views/MainWindow.axaml.cs.
 5. Se só a Offline aparecer, diagnostica o binário antigo antes de reescrever páginas.
 
 Regras:
@@ -972,7 +982,7 @@ Confirma:
 ### `libimobiledevice-1.0.so` em falta
 
 ```bash
-sudo apt install libimobiledevice-1.0-6
+sudo apt install libimobiledevice-utils
 ldconfig -p | grep libimobiledevice
 ```
 
@@ -1070,7 +1080,7 @@ stat -c '%y %n' "$(readlink -f "$(which fdr-system)")"
 - O restauro é destrutivo: testa num aparelho de teste, com backup.
 - Só firmware assinado pela Apple deve ser usado para restauro.
 - Verifica sempre o SHA-256 do IPSW.
-- O repositório é privado; não o tornar público sem autorização.
+- A visibilidade do repositório é uma decisão do autor; não a alteres sem autorização.
 - Ferramentas de jailbreak são externas e opcionais; não são incluídas no FDR.
 
 ---
@@ -1140,5 +1150,5 @@ systemctl status usbmuxd --no-pager
 idevice_id -l
 ```
 
-e abre uma issue/nota no repositório privado com esses dados. **Não incluas UDID,
+e abre uma issue/nota no repositório com esses dados. **Não incluas UDID,
 série, IMEI, Apple ID ou tokens.**

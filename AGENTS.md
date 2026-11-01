@@ -8,7 +8,7 @@ Linux, lê `docs/LINUX-FULL-GUIDE.md` (guia completo) e `docs/CONTINUE-ON-LINUX.
 ## Regras de ouro
 
 1. **Não mexer** em `C:\Users\p\Documents\OfflineDeviceDiagnostics` (ou `~/OfflineDeviceDiagnostics`).
-   Essa é a app Windows, em produção, com 1.6.0 publicada. Serve **só** como referência de leitura.
+   Essa é a app Windows, em produção, com 1.5.9 publicada. Serve **só** como referência de leitura.
 2. **Não subir versões** de Avalonia/DataGrid sem testar: DataGrid tem de ficar em `11.3.13`
    (não existe 11.3.22). .NET fica em `net8.0` (não usar `System.Threading.Lock`).
 3. **Ficheiros XAML têm de ser `.axaml`**, senão não compilam e o erro engana (`AVLN2000`).
@@ -28,6 +28,7 @@ Linux, lê `docs/LINUX-FULL-GUIDE.md` (guia completo) e `docs/CONTINUE-ON-LINUX.
 sudo bash packaging/install-linux-deps.sh                        # Debian/Ubuntu/Kali
 bash packaging/check-linux-env.sh                                # estado do ambiente
 dotnet build src/FdrSystem.App/FdrSystem.App.csproj -c Debug     # ~10 s
+dotnet test  tests/FdrSystem.Core.Tests/FdrSystem.Core.Tests.csproj -c Debug
 dotnet run   --project src/FdrSystem.App/FdrSystem.App.csproj    # precisa de display (X11/Wayland)
 bash packaging/build-linux.sh                                    # publish + .deb (versão de Directory.Build.props)
 bash packaging/bump-version.sh patch [--commit|--tag|--push]     # sobe a versão num único sítio
@@ -86,7 +87,8 @@ Sem iPhone nem display, o ciclo útil é: compilar → correr as ferramentas fal
 - [x] **AppImage + ícone + release** — `packaging/build-appimage.sh` (host x86_64/aarch64),
       ícones 16–512 instalados no `.deb`/`.desktop` e `.github/workflows/release.yml`
       (tag `v*` ou manual) para anexar `.deb` e AppImage à release.
-- [ ] **Testes automáticos** — parsers (progresso, IPSW/modelo, MDM, CPID/BDID) e motores.
+- [x] **Testes automáticos** — 166 testes xUnit para parsers (progresso, IPSW/modelo, MDM,
+      CPID/BDID), caminhos XDG e motores; a CI Linux corre todos.
 - [ ] **Teste no hardware** — correr no Linux com iPhone real e registar o que falha.
 
 ## Armadilhas que já custaram tempo

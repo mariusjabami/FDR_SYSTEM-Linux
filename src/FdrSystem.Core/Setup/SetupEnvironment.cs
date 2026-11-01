@@ -53,7 +53,7 @@ public sealed record SetupEnvironment(
     public string ManualCommand => Manager switch
     {
         PackageManager.Apt =>
-            "sudo apt update && sudo apt install -y usbmuxd libimobiledevice-utils libimobiledevice-1.0-6 "
+            "sudo apt update && sudo apt install -y usbmuxd libimobiledevice-utils "
             + "&& sudo systemctl enable --now usbmuxd",
         PackageManager.Dnf =>
             "sudo dnf install -y usbmuxd libimobiledevice-utils libimobiledevice "

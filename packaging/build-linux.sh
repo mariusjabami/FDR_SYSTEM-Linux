@@ -73,7 +73,10 @@ Version: $VERSION
 Section: utils
 Priority: optional
 Architecture: $DEB_ARCH
-Depends: libimobiledevice-utils, usbmuxd
+Depends: libimobiledevice-utils, usbmuxd, xdg-utils,
+ libfontconfig1, libfreetype6, libstdc++6, libgcc-s1, zlib1g,
+ libx11-6, libxcb1, libxext6, libxrandr2, libxi6, libxcursor1,
+ libxrender1, libxinerama1, libsm6, libice6, libgl1, libegl1
 Recommends: libimobiledevice-1.0-6 | libimobiledevice-1.0-6t64
 Maintainer: anymousdark <anymousdark@users.noreply.github.com>
 Description: FDR SYSTEM — leitura, recuperacao e restauro de iPhones (Linux)

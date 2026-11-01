@@ -273,7 +273,7 @@ public partial class DriverView : UserControl
     [
         "# Debian / Ubuntu",
         "sudo apt update",
-        "sudo apt install usbmuxd libimobiledevice-utils libimobiledevice-1.0-6",
+        "sudo apt install usbmuxd libimobiledevice-utils",
         "sudo systemctl enable --now usbmuxd",
         "sudo usermod -aG plugdev \"$USER\"",
         "",

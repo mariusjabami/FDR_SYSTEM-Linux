@@ -40,8 +40,9 @@ sudo apt install ./fdr-system_1.6.1_arm64.deb
 ```
 
 - Instala em `/opt/fdr-system`, cria o comando `fdr-system` e a entrada no menu com ícone.
-- Dependências: `libimobiledevice-utils` e `usbmuxd`; `libimobiledevice-1.0-6`
-  (ou `-6t64` no Ubuntu 24.04) fica como recomendação.
+- Dependências: `libimobiledevice-utils`, `usbmuxd`, `xdg-utils`, bibliotecas gráficas
+  X11/OpenGL/fontconfig e runtime nativo; `libimobiledevice-1.0-6` (ou `-6t64` no
+  Ubuntu 24.04) fica como recomendação.
 - O `idevicerestore` é opcional e só é necessário para a página Restauro.
 
 **Portátil — AppImage** (x86_64):
