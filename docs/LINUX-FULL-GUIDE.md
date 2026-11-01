@@ -3,7 +3,7 @@
 > **Repositório público:** `https://github.com/anymousdark/FDR_SYSTEM-Linux`
 > **Branch:** `main` · **Data:** 01/11/2026
 >
-> Este é o guia principal para instalar, compilar, testar e continuar o port no Linux.
+> Este é o guia principal para instalar, compilar, testar e continuar o port no Linux em qualquer distro.
 > Confirma sempre o commit atual com `git log -1 --oneline`; não confies num número de
 > commit escrito num documento antigo.
 >
